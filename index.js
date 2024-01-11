@@ -27,7 +27,7 @@ app.get("/generateRoom", (req, res) => {
     const uuid = uuidv4();
     const room = uuid.substring(0, 4).trim();
     res
-      .status(500)
+      .status(200)
       .json({
         message: "Room generated successfully",
         room: room.toUpperCase(),
