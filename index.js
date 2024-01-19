@@ -62,7 +62,7 @@ io.on("connection", (socket) => {
     const winner = checkWinner(table);
     if (winner) {
       console.log(`User with id ${socket.id} won for room: ${room}`);
-      socket.broadcast.to(`game_${room}`).emit(`winner`, winner);
+      socket.emit(`winner`, winner);
     }
   });
 
