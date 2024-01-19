@@ -58,6 +58,12 @@ io.on("connection", (socket) => {
     const { table, room } = data;
     console.log(`User move ${socket.id} for room: ${room}`);
     socket.broadcast.to(`game_${room}`).emit(`updateTable`, table);
+    // Check winner
+    const winner = checkWinner(table);
+    if (winner) {
+      console.log(`User with id ${socket.id} won for room: ${room}`);
+      socket.broadcast.to(`game_${room}`).emit(`winner`, winner);
+    }
   });
 
   socket.on('won', data => {
@@ -71,6 +77,24 @@ io.on("connection", (socket) => {
     console.log("Usuario desconectado");
   });
 });
+
+const checkWinner = (boxes) => {
+  const winCombinations = [
+    [0, 1, 2], [3, 4, 5], [6, 7, 8], // Filas
+    [0, 3, 6], [1, 4, 7], [2, 5, 8], // Columnas
+    [0, 4, 8], [2, 4, 6]              // Diagonales
+  ];
+
+  for (const combination of winCombinations) {
+    const [a, b, c] = combination;
+
+    if (boxes[a] === boxes[b] && boxes[a] === boxes[c] && boxes[a] !== "") {
+      return `Ganador ${boxes[a].toUpperCase()}`;
+    }
+  }
+
+  return null
+}
 
 server.listen(port, () => {
   console.log("Server started on port " + port);
